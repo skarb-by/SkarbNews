@@ -1,7 +1,11 @@
 import { StyleSheet, Text } from "react-native";
 
-const PostDate = ({ createdAt }) => {
-  return <Text style={styles.text}>{createdAt}</Text>;
+export const PostDate = ({ publishedAt }) => {
+  return (
+    <Text style={styles.text}>
+      {new Date(publishedAt).toLocaleDateString()}
+    </Text>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -11,5 +15,3 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
 });
-
-export default PostDate;

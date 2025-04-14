@@ -3,27 +3,26 @@ import {
   StyleSheet,
   Alert,
   FlatList,
-  ActivityIndicator,
-  Text,
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import PostImages from "./PostImages";
-import PostTitle from "./PostTitle";
-import PostDate from "./PostDate";
-import Loading from "./Loading";
+import { PostImages } from "./PostImages";
+import { PostTitle } from "./PostTitle";
+import { PostDate } from "./PostDate";
+import { Loading } from "./Loading";
+import { ENV_VAR } from "@env";
 
-const Home = () => {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [items, setItems] = React.useState();
+export const Home = ({ navigation }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [items, setItems] = useState();
   const fetchPosts = () => {
     setIsLoading(true);
     axios
-      .get("https://67f3f8f0cbef97f40d2ce28c.mockapi.io/articles")
+      .get(`https://newsapi.org/v2/everything?q=bitcoin&apiKey=${ENV_VAR}`)
       .then(({ data }) => {
-        setItems(data);
+        setItems(data.articles);
       })
       .catch((err) => {
         console.log(err);
@@ -34,9 +33,9 @@ const Home = () => {
       });
   };
 
-  React.useEffect(fetchPosts, []);
+  useEffect(fetchPosts, []);
   if (isLoading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
@@ -47,14 +46,16 @@ const Home = () => {
         }
         data={items}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => alert('TOUCHED')}>
-          <View style={styles.post}>
-            <PostImages imageUrl={item.imageUrl}> </PostImages>
-            <View style={styles.view}>
-              <PostTitle title={item.title}> </PostTitle>
-              <PostDate createdAt={item.createdAt}> </PostDate>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("FullPost", item)}
+          >
+            <View style={styles.post}>
+              <PostImages urlToImage={item.urlToImage}> </PostImages>
+              <View style={styles.view}>
+                <PostTitle title={item.title}> </PostTitle>
+                <PostDate publishedAt={item.publishedAt}> </PostDate>
+              </View>
             </View>
-          </View>
           </TouchableOpacity>
         )}
       />
@@ -73,7 +74,4 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
-
 });
-
-export default Home;

@@ -1,45 +1,48 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  FlatList,
-  ActivityIndicator,
+  ScrollView,
   RefreshControl,
-  TouchableOpacity,
 } from "react-native";
-import axios from "axios";
-import Loading from "./Loading";
 
-const FullPost = () => {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [data, setData] = React.useState();
+import { Loading } from "./Loading";
 
-  React.useEffect(() => {
-    axios
-      .get("https://67f3f8f0cbef97f40d2ce28c.mockapi.io/articles/1")
-      .then(({ data }) => {
-        setData(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        Alert.alert("Ошибка", "Не удалось получить статью.");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+export const FullPost = ({ route, navigation }) => {
+  const { urlToImage, content, title, author } = route.params;
+  const [refreshing, setRefreshing] = useState(true);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: title,
+    });
+    setRefreshing(false);
+  });
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
   }, []);
 
-  if (isLoading) {
+  if (refreshing) {
     return <Loading />;
   }
 
   return (
     <View style={styles.view}>
-      <Image style={styles.PostImage} source={{ uri: data.imageUrl }}/>
-
-      <Text style={styles.PostText}>{data.text}</Text>
+      <Image style={styles.PostImage} source={{ uri: urlToImage }} />
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <Text style={styles.PostText}>{content}</Text>
+        <Text style={styles.PostAuthor}>{author}</Text>
+      </ScrollView>
     </View>
   );
 };
@@ -48,27 +51,38 @@ const styles = StyleSheet.create({
   PostImage: {
     width: "100%",
     height: "50%",
-    resizeMode: 'stretch',
+    resizeMode: "stretch",
     borderRadius: 10,
-
-    marginBottom: 20,
+    marginBottom: 5,
     justifyContent: "center",
   },
+
   PostText: {
     fontSize: 18,
     lineHeight: 24,
+    textAlign: "justify",
+  },
+  PostAuthor: {
+    fontSize: 13,
+    paddingTop: 10,
+    textAlign: "right",
   },
   view: {
-    padding: 20,
+    padding: 10,
+    flex: 1,
   },
+
   loadingView: {
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
+
   loadingText: {
-    marginTop: 20,
+    marginTop: 10,
+  },
+
+  abc: {
+    flex: 1,
   },
 });
-
-export default FullPost;

@@ -1,16 +1,8 @@
-import {View, StatusBar} from 'react-native';
-import Home from './component/Home';
-import FullPost from './component/FullPost';
+import React from 'react';
+
+import { Navigation } from './component/Navigation';
 
 
-const App = () => {
-
-  return (
-   <View>
-     <Home/>
-    <StatusBar theme="auto" />
-    </View>
-  );
-};
-
-export default App;
+export default function App() {
+  return <Navigation />;
+}

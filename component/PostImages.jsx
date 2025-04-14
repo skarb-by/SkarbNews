@@ -1,7 +1,7 @@
 import { StyleSheet, Image } from "react-native";
 
-const PostImages = ({ imageUrl }) => {
-  return <Image style={styles.image} source={{ uri: imageUrl }} />;
+export const PostImages = ({ urlToImage }) => {
+  return <Image style={styles.image} source={{ uri: urlToImage }} />;
 };
 
 const styles = StyleSheet.create({
@@ -12,5 +12,3 @@ const styles = StyleSheet.create({
     marginRight: 7,
   },
 });
-
-export default PostImages;
