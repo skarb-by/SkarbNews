@@ -4,7 +4,6 @@
 
 ## Новости
 
-
 ### Проект выглядит следующим образом
 
 <img
@@ -30,4 +29,3 @@
   style="display: inline-block; margin: 0 auto; ">
 
 <hr/>
-
